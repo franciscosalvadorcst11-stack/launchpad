@@ -21,9 +21,16 @@
 (function () {
   'use strict';
 
-  if (window.__rteLaunchpad) {
-    window.__rteLaunchpad.open();
+  var VERSION = 2;
+  var prev = window.__rteLaunchpad;
+  if (prev && prev.version === VERSION) {
+    prev.open();
     return;
+  }
+  /* havia uma versao antiga viva nesta pagina: remove la o popup dela */
+  var oldHost = document.getElementById('rte-launchpad-host');
+  if (oldHost && oldHost.parentNode) {
+    oldHost.parentNode.removeChild(oldHost);
   }
 
   var SECTIONS = [
@@ -172,7 +179,7 @@
 
   var slidesHtml = ITEMS.map(function (it, i) {
     var bg = it.img
-      ? OVERLAY + ',url("' + esc(it.img) + '") center/cover no-repeat'
+      ? OVERLAY + ",url('" + esc(it.img) + "') center/cover no-repeat"
       : FALLBACK;
     return '<div class="slide pr2" data-i="' + i + '">' +
       '<a class="card" style="background:' + bg + '" href="' + esc(it.url) + '"' +
@@ -282,7 +289,7 @@
     touchX = null;
   }, { passive: true });
 
-  window.__rteLaunchpad = { open: open, close: close };
+  window.__rteLaunchpad = { version: VERSION, open: open, close: close };
 
   go(0);
   open();
